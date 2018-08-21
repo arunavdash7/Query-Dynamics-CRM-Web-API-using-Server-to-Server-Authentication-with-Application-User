@@ -32,19 +32,19 @@ namespace S2SAuthenticationwithD365
                 S2SAuthenticationwithD365 s = new S2SAuthenticationwithD365();
                 string[] accountProperties = { "name" };
                 JObject collection;
-                ClientCredential credential = new ClientCredential("30df5238-5afa-4a35-86fe-96304501d7bb", "danbF4EJMcK/JMVVYsMwd0kG5ZSX1/7VN7mEs9BymnU=");
+                ClientCredential credential = new ClientCredential("provide client Id", "provide secret key");
 
-                string authorityUri = "https://login.microsoftonline.com/lti12345.onmicrosoft.com/oauth2/authorize"; // here xrmforyou53.onmicrosoft.com is my crm domain. Please replace with your domain 
+                string authorityUri = "https://login.microsoftonline.com/abc.onmicrosoft.com/oauth2/authorize"; // here abc.onmicrosoft.com is my crm domain. Please replace with your domain 
                 TokenCache tokenCache = new TokenCache();
 
                 AuthenticationContext context = new AuthenticationContext(authorityUri);
-                AuthenticationResult result = await context.AcquireTokenAsync("https://lti12345.crm8.dynamics.com", credential); // https://xrmforyou53.crm.dynamics.com is my CRM URL. You need to use your crm url to test this.
+                AuthenticationResult result = await context.AcquireTokenAsync("Provide crm credential", credential); 
 
                 var authToken = result.AccessToken;
                 var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12; //
-                var response = httpClient.GetAsync("https://lti12345.api.crm8.dynamics.com/api/data/v9.0/accounts?$select=name").Result;
+                var response = httpClient.GetAsync("crmurl/api/data/v9.0/accounts?$select=name").Result;
                 var accountJSON = await response.Content.ReadAsStringAsync();
                 collection = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result);
                 s.DisplayFormattedEntities("Saved query (Active Accounts):", collection, accountProperties);
